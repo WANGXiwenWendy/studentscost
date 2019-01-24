@@ -1,0 +1,95 @@
+Q7: Could you find a better model? (3 p.)
+1) Better models are:
+M_Better2 <- lm(imueclt ~ imwbcnt + imbgeco,ESS_2008)
+M_Better3 <- lm(imueclt ~ eisced + imwbcnt + imbgeco,ESS_2008)
+2) Process of finding a better model:
+a) I firstly created a multiple regression model with all the available variables.
+M_Better1 <- lm(imueclt ~ eduyrs + trrenyr + eisced + gndr + imwbcnt + imbgeco,ESS_2008)
+b) I then tested for multicollinearity using
+vif(M_Better1)
+Since VIF is less than 10 so we don't need to worry for multicollinearity for all the variables
+c) Then I made a summary of this model to see different p-values of different variables
+summary(M_Better1) and we get:
+Coefficients:
+Estimate Std. Error t value Pr(>|t|)
+(Intercept) 0.741609 0.186485 3.977 7.24e-05 ***
+eduyrs 0.008512 0.015670 0.543 0.58704
+trrenyr -0.021057 0.052918 -0.398 0.69073
+eisced 0.092341 0.034489 2.677 0.00748 **
+gndr2 0.083220 0.076197 1.092 0.27489
+imwbcnt 0.576464 0.024319 23.704 < 2e-16 ***
+imbgeco 0.319934 0.022541 14.193 < 2e-16 ***
+So we could collect from the summary of the regression of M_Better1 that:
+the variables with p-value less than 0.05 are: "imwbcnt", "imbgeco" and "eisced".
+d) Now let's make two regression models with the variables with p-value than 0.05 suggested above. And try to get their R-squared value and AIC and BIC values.
+M_Better2 <- lm(imueclt ~ imwbcnt + imbgeco,ESS_2008)
+summary(M_Better2)
+Coefficients:
+Estimate Std. Error t value Pr(>|t|)
+(Intercept) 1.01299 0.09618 10.53 <2e-16 ***
+imwbcnt 0.58323 0.02360 24.71 <2e-16 ***
+imbgeco 0.34657 0.02183 15.87 <2e-16 ***
+So M_Better2: Y = 1.01299 + 0.58323*X1 + 0.34657*X2
+M_Better3 <- lm(imueclt ~ eisced + imwbcnt + imbgeco,ESS_2008)
+summary(M_Better3)
+Coefficients:
+Estimate Std. Error t value Pr(>|t|)
+(Intercept) 0.79171 0.10483 7.552 6.47e-14 ***
+eisced 0.10803 0.02103 5.137 3.06e-07 ***
+imwbcnt 0.56947 0.02361 24.124 < 2e-16 ***
+imbgeco 0.32678 0.02204 14.828 < 2e-16 ***
+So M_Better3: Y = 0.79171 + 0.10803*X1 + 0.56947*X2 + 0.32678*X3
+AIC(M_Better2)
+AIC(M_Better3)
+AIC(M_Better1)
+BIC(M_Better2)
+BIC(M_Better3)
+BIC(M_Better1)
+3) Justification for the better models (M_Better2 and M_Better3)
+a) M_Better2 has two independent variables and a R-squared value of 0.5553;
+M_Better3 has two independent variables and a R-squared value of 0.5611;
+M_Better1 has six independent variables but only a R-syuared value of 0.5589;
+b) By comparison, we can conclude that in terms of using less variables to achieve higher R-squared value (better fit of Y)
+
+
+R SCRIPT
+
+# Q7: Could you find a better model?
+# Better models: M_Better2 <- lm(imueclt ~ imwbcnt + imbgeco,ESS_2008)
+#                M_Better3 <- lm(imueclt ~ eisced + imwbcnt + imbgeco,ESS_2008)
+
+# Process of finding a better model:
+
+# 1) Let's first creat a multiple regression model with all the available variables.
+ESS_2008$eisced <- as.numeric(ESS_2008$eisced) #recode the variable into numeric variable so that we can see the p-value more directly.
+M_Better1 <- lm(imueclt ~ eduyrs + trrenyr + eisced + gndr + imwbcnt + imbgeco,ESS_2008)
+#    Test for multicollinearity
+vif(M_Better1) 
+#    VIF is less than 10 so we don't need to worry for multicollinearity for all the variables
+#    Let's make a summary of this model to see different p-values of different variables
+summary(M_Better1)
+
+#    We can collect from the summary of the regression of M_Better1 that:
+#    the varibales with p-value less than 0.05 are: "imwbcnt", "imbgeco" and "eisced".
+
+# 2)  Now let's make two regression models with the variables with p-value than 0.05 suggested above.
+M_Better2 <- lm(imueclt ~ imwbcnt + imbgeco,ESS_2008)
+summary(M_Better2)
+
+M_Better3 <- lm(imueclt ~ eisced + imwbcnt + imbgeco,ESS_2008)
+summary(M_Better3)
+
+AIC(M_Better2)
+AIC(M_Better3)
+AIC(M_Better1)
+
+BIC(M_Better2)
+BIC(M_Better3)
+BIC(M_Better1)
+
+# 3) Justification for the better models (M_Better2 and M_Better3)
+#   a) M_Better2 has two independent variables and a R-squared value of 0.5553;
+#      M_Better3 has two independent variables and a R-squared value of 0.5611;
+#      M_Better1 has six independent variables but only a R-syuared value of 0.5589;
+#   b) By comparison, We can conclude that in terms of using less variables to achieve higher R-suqared value (better fit of Y),
+#      So M_Better2 and M_Better3 are better models.
